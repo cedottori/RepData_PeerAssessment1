@@ -8,10 +8,84 @@ output:
 -----------------------------------------------------------------------------------------------
 
 ## Loading and preprocessing the data
-```{r load_and_process, echo=TRUE}
+
+```r
 library(Hmisc)
+```
+
+```
+## Warning: package 'Hmisc' was built under R version 3.2.2
+```
+
+```
+## Loading required package: grid
+## Loading required package: lattice
+```
+
+```
+## Warning: package 'lattice' was built under R version 3.2.2
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## Warning: package 'survival' was built under R version 3.2.2
+```
+
+```
+## Loading required package: Formula
+```
+
+```
+## Warning: package 'Formula' was built under R version 3.2.2
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.2
+```
+
+```
+## 
+## Attaching package: 'Hmisc'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, round.POSIXt, trunc.POSIXt, units
+```
+
+```r
 library(ggplot2)
 library(dplyr)
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.2.2
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:Hmisc':
+## 
+##     combine, src, summarize
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 options(scipen=999)
 
 directory <- "C:/RAWDATA/RMD1/RepData_PeerAssessment1"
@@ -26,30 +100,31 @@ stepsdf     <- filter(stepsdf_orig, is.na(steps)==FALSE)
 totalSteps  <- stepsdf %>%  group_by(date) %>% summarize(steps_per_day=sum(steps))
 meanSteps   <- mean(totalSteps$steps_per_day)
 medianSteps <- median(totalSteps$steps_per_day)
-
 ```
 
 -----------------------------------------------------------------------------------------------
 
 ## What is mean total number of steps taken per day?
 
-### The mean total steps taken each day were `r round(meanSteps,2)`
+### The mean total steps taken each day were 10766.19
 
-### The median total steps taken each day were `r round(medianSteps,2)`
+### The median total steps taken each day were 10765
 
-```{r histogram, echo=TRUE}
+
+```r
 hist(totalSteps$steps_per_day
     ,xlab="Total steps per day"
     ,main="Histogram of total steps per day" )
-
-
 ```
+
+![plot of chunk histogram](figure/histogram-1.png) 
 
 
 -----------------------------------------------------------------------------------------------
 
 ## What is the average daily activity pattern?
-```{r daily_activity,echo=TRUE}
+
+```r
 dailyPattern   <- stepsdf %>%  group_by(interval) %>% summarize(steps_per_interval=mean(steps))
 
 plot(dailyPattern$interval
@@ -64,11 +139,13 @@ lines(dailyPattern$interval
      ,lwd=1)
 ```
 
+![plot of chunk daily_activity](figure/daily_activity-1.png) 
+
 -----------------------------------------------------------------------------------------------
 
 ## Imputing missing values
-```{r missing_values,echo=TRUE}
 
+```r
 # calculates total NAs
 totalNAs <- sum(is.na(stepsdf_orig$steps))
 
@@ -87,25 +164,24 @@ median2Steps <- median(total2Steps$steps_per_day)
 
 diffMeanSteps   <- mean2Steps   - meanSteps
 diffMedianSteps <- median2Steps - medianSteps
-
-
 ```
 
-### The mean total steps taken each day with filled dataset were `r round(mean2Steps,2)`
+### The mean total steps taken each day with filled dataset were 10766.19
 
-### The median total steps taken each day with filled dataset were `r round(median2Steps,2)`
+### The median total steps taken each day with filled dataset were 10766.19
 
-```{r histogram2, echo=TRUE}
+
+```r
 hist(total2Steps$steps_per_day
     ,xlab="Total steps per day"
     ,main="Histogram of total steps per day for imputed dataset" )
-
-
 ```
+
+![plot of chunk histogram2](figure/histogram2-1.png) 
 
 ## Do these values differ from the estimates from the first part of the assignment? 
 
-### The values differ in `r diffMeanSteps` for the means and `r diffMedianSteps` for the median
+### The values differ in 0 for the means and 1.1886792 for the median
 
 -----------------------------------------------------------------------------------------------
 
@@ -118,8 +194,8 @@ hist(total2Steps$steps_per_day
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
-```{r weekends, echo=TRUE}
 
+```r
 labs<-c("weekdays","weekend")
 
 stepsdf_orig <- mutate(stepsdf_orig
@@ -138,8 +214,9 @@ p <- p + facet_grid(weekend~.)
 p <- p + xlab("Interval") + ylab("Mean steps per day")
 p <- p + labs(title="Daily activity pattern (weekend x weekdays)") 
 print(p)
-
 ```
+
+![plot of chunk weekends](figure/weekends-1.png) 
 
 ### It is possible too see the pattern is quite different in weekdays and weekends. 
 ### In weekdays the pattern shows that activity starts earlier and reaches a strong peak before noon.
